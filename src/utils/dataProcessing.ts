@@ -139,3 +139,42 @@ export const formatCurrency = (amount: number): string => {
     currency: 'USD',
   }).format(amount);
 };
+
+export interface CostAnomaly {
+  date: string;
+  totalCost: number;
+  averageCost: number;
+  difference: number;
+  percentage: number;
+}
+
+export const processCostAnomalies = (data: UsageRecord[], thresholdMultiplier = 1.5): CostAnomaly[] => {
+  // Aggregate cost by date first
+  const dailyCosts = new Map<string, number>();
+  data.forEach((record) => {
+    dailyCosts.set(
+      record.date,
+      (dailyCosts.get(record.date) || 0) + record.gross_amount
+    );
+  });
+
+  const costValues = Array.from(dailyCosts.values());
+  if (costValues.length === 0) return [];
+
+  const totalCost = costValues.reduce((a, b) => a + b, 0);
+  const averageCost = totalCost / costValues.length;
+
+  // Simple anomaly detection: significantly higher than average
+  // We can refine this to use deviation, but for now 1.5x or 2x average is a good start visualization
+
+  return Array.from(dailyCosts.entries())
+    .filter(([_, cost]) => cost > averageCost * thresholdMultiplier)
+    .map(([date, cost]) => ({
+      date,
+      totalCost: cost,
+      averageCost,
+      difference: cost - averageCost,
+      percentage: ((cost - averageCost) / averageCost) * 100
+    }))
+    .sort((a, b) => b.totalCost - a.totalCost);
+};

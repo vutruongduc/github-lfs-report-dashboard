@@ -59,7 +59,7 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({ data }) => {
         return (
           <div
             key={index}
-            className="bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow"
+            className="glass-card p-6 card-hover"
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-medium text-gray-600">{card.title}</h3>

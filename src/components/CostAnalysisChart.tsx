@@ -36,8 +36,9 @@ const CostAnalysisChart: React.FC<CostAnalysisChartProps> = ({ data }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Cost Analysis Over Time</h3>
+
+    <div className="glass-card p-6 card-hover">
+      <h3 className="text-lg font-bold text-slate-800 mb-6">Cost Analysis</h3>
       <ResponsiveContainer width="100%" height={400}>
         <LineChart data={dailyData}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />

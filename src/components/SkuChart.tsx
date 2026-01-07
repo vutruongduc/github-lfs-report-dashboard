@@ -41,8 +41,9 @@ const SkuChart: React.FC<SkuChartProps> = ({ data }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Usage by SKU</h3>
+
+    <div className="glass-card p-6 card-hover">
+      <h3 className="text-lg font-bold text-slate-800 mb-6">Usage by SKU</h3>
       <ResponsiveContainer width="100%" height={400}>
         <PieChart>
           <Pie
@@ -52,10 +53,8 @@ const SkuChart: React.FC<SkuChartProps> = ({ data }) => {
             cx="50%"
             cy="50%"
             outerRadius={120}
-            label={(entry: any) =>
-              `${entry.sku.replace('actions_', '')}: ${entry.percentage.toFixed(1)}%`
-            }
-            labelLine={true}
+            label={false}
+            labelLine={false}
           >
             {skuData.map((_item, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

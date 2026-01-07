@@ -43,8 +43,9 @@ const TopRepositoriesChart: React.FC<TopRepositoriesChartProps> = ({ data }) => 
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Top 10 Repositories by Usage</h3>
+
+    <div className="glass-card p-6 card-hover">
+      <h3 className="text-lg font-bold text-slate-800 mb-6">Top Repositories</h3>
       <ResponsiveContainer width="100%" height={400}>
         <BarChart data={repoData} layout="vertical" margin={{ left: 120 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />

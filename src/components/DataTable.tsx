@@ -77,10 +77,10 @@ const DataTable: React.FC<DataTableProps> = ({ data }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md border border-gray-200">
+    <div className="glass-card mt-8">
       <div className="p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Usage Data Table</h3>
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-bold text-slate-800">Usage Details</h3>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
@@ -191,11 +191,10 @@ const DataTable: React.FC<DataTableProps> = ({ data }) => {
                   <button
                     key={i}
                     onClick={() => setCurrentPage(pageNum)}
-                    className={`px-4 py-2 border rounded-lg text-sm font-medium ${
-                      currentPage === pageNum
+                    className={`px-4 py-2 border rounded-lg text-sm font-medium ${currentPage === pageNum
                         ? 'bg-blue-500 text-white border-blue-500'
                         : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                    }`}
+                      }`}
                     aria-label={`Go to page ${pageNum}`}
                     aria-current={currentPage === pageNum ? 'page' : undefined}
                   >

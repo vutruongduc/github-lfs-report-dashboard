@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { BarChart3 } from 'lucide-react';
 import FileUpload from './components/FileUpload';
 import SummaryCards from './components/SummaryCards';
@@ -7,29 +7,63 @@ import SkuChart from './components/SkuChart';
 import TopUsersChart from './components/TopUsersChart';
 import TopRepositoriesChart from './components/TopRepositoriesChart';
 import CostAnalysisChart from './components/CostAnalysisChart';
+import AnomalyCostChart from './components/AnomalyCostChart';
 import DataTable from './components/DataTable';
+import FilterBar, { type FilterState } from './components/FilterBar';
 import type { UsageRecord } from './types/usage';
 
 function App() {
   const [data, setData] = useState<UsageRecord[] | null>(null);
+  const [filters, setFilters] = useState<FilterState>({
+    startDate: '',
+    endDate: '',
+    username: '',
+    repository: '',
+    sku: '',
+    costCenter: '',
+  });
 
   const handleDataLoaded = (loadedData: UsageRecord[]) => {
     setData(loadedData);
+    setFilters({
+      startDate: '',
+      endDate: '',
+      username: '',
+      repository: '',
+      sku: '',
+      costCenter: '',
+    });
   };
 
+  const filteredData = useMemo(() => {
+    if (!data) return [];
+
+    return data.filter((record) => {
+      if (filters.startDate && record.date < filters.startDate) return false;
+      if (filters.endDate && record.date > filters.endDate) return false;
+      if (filters.username && record.username !== filters.username) return false;
+      if (filters.repository && record.repository !== filters.repository) return false;
+      if (filters.sku && record.sku !== filters.sku) return false;
+      if (filters.costCenter && record.cost_center_name !== filters.costCenter) return false;
+      return true;
+    });
+  }, [data, filters]);
+
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center space-x-3">
-            <BarChart3 className="w-8 h-8 text-blue-600" />
+      <header className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200/60 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center space-x-4">
+            <div className="bg-gradient-to-tr from-blue-600 to-indigo-600 p-2 rounded-xl shadow-lg shadow-blue-500/20">
+              <BarChart3 className="w-6 h-6 text-white" />
+            </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                GitHub Actions/LFS Usage Dashboard
+              <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700">
+                LFS & Actions Report
               </h1>
-              <p className="text-sm text-gray-600 mt-1">
-                Analyze and visualize your GitHub Actions and LFS usage reports
+              <p className="text-xs text-slate-500 font-medium">
+                Usage Analytics Dashboard
               </p>
             </div>
           </div>
@@ -63,24 +97,43 @@ function App() {
           </div>
         ) : (
           <div className="space-y-8">
+            <FilterBar
+              data={data}
+              filters={filters}
+              onFilterChange={setFilters}
+              onClearFilters={() => setFilters({
+                startDate: '',
+                endDate: '',
+                username: '',
+                repository: '',
+                sku: '',
+                costCenter: '',
+              })}
+            />
+
             {/* Summary Cards */}
-            <SummaryCards data={data} />
+            <SummaryCards data={filteredData} />
 
-            {/* Charts Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <DailyUsageChart data={data} />
-              <SkuChart data={data} />
+            {/* Cost Analysis Section - prioritized */}
+            <div className="space-y-6">
+              <CostAnalysisChart data={filteredData} />
+              <AnomalyCostChart data={filteredData} />
             </div>
 
+            {/* Users & Repos */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <TopUsersChart data={data} />
-              <TopRepositoriesChart data={data} />
+              <TopUsersChart data={filteredData} />
+              <TopRepositoriesChart data={filteredData} />
             </div>
 
-            <CostAnalysisChart data={data} />
+            {/* Usage Trends */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <DailyUsageChart data={filteredData} />
+              <SkuChart data={filteredData} />
+            </div>
 
             {/* Data Table */}
-            <DataTable data={data} />
+            <DataTable data={filteredData} />
 
             {/* Upload New File Button */}
             <div className="flex justify-center pt-4">
@@ -94,17 +147,17 @@ function App() {
             </div>
           </div>
         )}
-      </main>
+      </main >
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-12">
+      < footer className="bg-white border-t border-gray-200 mt-12" >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <p className="text-center text-sm text-gray-600">
             GitHub Actions/LFS Usage Dashboard - Built with React, TypeScript, and Recharts
           </p>
         </div>
-      </footer>
-    </div>
+      </footer >
+    </div >
   );
 }
 
